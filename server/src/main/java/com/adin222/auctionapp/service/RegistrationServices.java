@@ -42,7 +42,7 @@ public class RegistrationServices {
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
         Pattern pattern = Pattern.compile(emailRegex);
         if (!pattern.matcher(userDTO.getEmail()).matches()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, " Incorrect email address format.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect email address format.");
         }
 
 

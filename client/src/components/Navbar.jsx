@@ -119,7 +119,6 @@ export const Navbar = () => {
         Become Seller
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>Wishlist</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
     </Menu>
   );
 

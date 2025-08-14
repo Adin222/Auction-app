@@ -12,52 +12,78 @@ import { CssBaseline, Container } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { parseLocation } from "./utils/utils";
 import Box from "@mui/material/Box";
+import { StateContext } from "./context/StateContext";
 import "./App.css";
+
+import { useQuery } from "@tanstack/react-query";
+
+import { get } from "./services/services";
+import { meRoute } from "./routes/routes";
+import { Loading } from "./components/Loading";
 
 function App() {
   const location = useLocation();
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
-      <Box>
-        <ActionNavbar />
-        {(location.pathname === "/login" ||
-          location.pathname === "/register") && <LoginNavbar />}
-        {location.pathname !== "/login" &&
-          location.pathname !== "/register" && <Navbar />}
-        {location.pathname !== "/login" &&
-          location.pathname !== "/register" && (
-            <LocationRibbon
-              location={parseLocation(location.pathname).second}
-              category={parseLocation(location.pathname).first}
-              subCategory={parseLocation(location.pathname).second}
-            />
-          )}
-      </Box>
 
-      <CssBaseline />
-      <Box sx={{ flex: 1, mt: 4, mb: 4 }}>
-        <Container>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="/register" element={<SignUp />} />
-            <Route
-              path="/my-account/become-seller"
-              element={<BecomeSeller />}
-            />
-          </Routes>
-        </Container>
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => get(meRoute),
+    retry: false,
+  });
+
+  if (isLoading) return <Loading />;
+
+  console.log(data?.data);
+
+  const { role } = data?.data;
+
+  const value = {
+    role,
+    refetch,
+  };
+
+  return (
+    <StateContext value={value}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+        }}
+      >
+        <Box>
+          {role == "guest" && <ActionNavbar />}
+          {(location.pathname === "/login" ||
+            location.pathname === "/register") && <LoginNavbar />}
+          {location.pathname !== "/login" &&
+            location.pathname !== "/register" && <Navbar />}
+          {location.pathname !== "/login" &&
+            location.pathname !== "/register" && (
+              <LocationRibbon
+                location={parseLocation(location.pathname).second}
+                category={parseLocation(location.pathname).first}
+                subCategory={parseLocation(location.pathname).second}
+              />
+            )}
+        </Box>
+
+        <CssBaseline />
+        <Box sx={{ flex: 1, mt: 4, mb: 4 }}>
+          <Container>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/register" element={<SignUp />} />
+              <Route
+                path="/my-account/become-seller"
+                element={<BecomeSeller />}
+              />
+            </Routes>
+          </Container>
+        </Box>
+        {location.pathname !== "/login" &&
+          location.pathname !== "/register" && <Footer />}
       </Box>
-      {location.pathname !== "/login" && location.pathname !== "/register" && (
-        <Footer />
-      )}
-    </Box>
+    </StateContext>
   );
 }
 
