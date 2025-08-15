@@ -65,7 +65,7 @@ export const SignIn = () => {
         refetch();
         navigate("/");
         setLoading(false);
-      }, [2000]);
+      }, [750]);
     } else {
       setToastMessage({
         open: true,

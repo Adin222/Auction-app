@@ -1,7 +1,7 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -16,6 +16,8 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Stack from "@mui/material/Stack";
 import MoreIcon from "@mui/icons-material/MoreVert";
+
+import { getActiveFromPath } from "../utils/utils";
 
 const buttonRemoveStyle = {
   background: "none",
@@ -65,9 +67,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const navigate = useNavigate();
+
+  const [activeItem, setActiveItem] = React.useState(
+    getActiveFromPath(location.pathname)
+  );
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -87,6 +94,16 @@ export const Navbar = () => {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClick = (item, path) => {
+    setActiveItem(item);
+    navigate(path);
+  };
+
+  const handleSetAccount = (item, event) => {
+    setActiveItem(item);
+    handleProfileMenuOpen(event);
   };
 
   const menuId = "primary-search-account-menu";
@@ -182,11 +199,16 @@ export const Navbar = () => {
           <Typography
             variant="h6"
             noWrap
+            onClick={() => {
+              navigate("/");
+              setActiveItem("HOME");
+            }}
             component="div"
             sx={{
               display: { xs: "none", sm: "flex" },
               alignItems: "center",
               gap: 1,
+              cursor: "pointer",
               color: "#616161",
             }}
           >
@@ -204,9 +226,31 @@ export const Navbar = () => {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" spacing={3}>
-            <button style={buttonRemoveStyle}>HOME</button>
-            <button style={buttonRemoveStyle}>SHOP</button>
-            <button onClick={handleProfileMenuOpen} style={buttonRemoveStyle}>
+            <button
+              onClick={() => handleMenuClick("HOME", "/")}
+              style={{
+                ...buttonRemoveStyle,
+                fontWeight: activeItem === "HOME" ? "bold" : "normal",
+              }}
+            >
+              HOME
+            </button>
+            <button
+              onClick={() => handleMenuClick("SHOP", "/public/shop")}
+              style={{
+                ...buttonRemoveStyle,
+                fontWeight: activeItem === "SHOP" ? "bold" : "normal",
+              }}
+            >
+              SHOP
+            </button>
+            <button
+              onClick={(e) => handleSetAccount("MY ACCOUNT", e)}
+              style={{
+                ...buttonRemoveStyle,
+                fontWeight: activeItem === "MY ACCOUNT" ? "bold" : "normal",
+              }}
+            >
               MY ACCOUNT
             </button>
           </Stack>

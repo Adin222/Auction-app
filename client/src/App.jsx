@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Home } from "./pages/Home";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
@@ -9,7 +10,7 @@ import { ActionNavbar } from "./components/ActionNavbar";
 import { LoginNavbar } from "./components/LoginNavbar";
 import { LocationRibbon } from "./components/LocationRibbon";
 import { CssBaseline, Container } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { parseLocation } from "./utils/utils";
 import Box from "@mui/material/Box";
 import { StateContext } from "./context/StateContext";
@@ -17,12 +18,16 @@ import "./App.css";
 
 import { useQuery } from "@tanstack/react-query";
 
-import { get } from "./services/services";
-import { meRoute } from "./routes/routes";
+import { get, post } from "./services/services";
+import { meRoute, logoutRoute } from "./routes/routes";
 import { Loading } from "./components/Loading";
+import { ModalWindow } from "./components/ModalWindow";
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["logged_user"],
@@ -30,15 +35,28 @@ function App() {
     retry: false,
   });
 
-  if (isLoading) return <Loading />;
+  const hanldeLogout = async () => {
+    const response = await post(logoutRoute, {});
+    setLoading(true);
+    if (response.status === 200) {
+      refetch();
+      navigate("/");
+      setLoading(false);
+      setOpen(false);
+    } else {
+      setLoading(false);
+      alert("ERRORRR");
+    }
+  };
 
-  console.log(data?.data);
+  if (isLoading) return <Loading />;
 
   const { role } = data?.data;
 
   const value = {
     role,
     refetch,
+    setOpen,
   };
 
   return (
@@ -51,7 +69,7 @@ function App() {
         }}
       >
         <Box>
-          {role == "guest" && <ActionNavbar />}
+          <ActionNavbar />
           {(location.pathname === "/login" ||
             location.pathname === "/register") && <LoginNavbar />}
           {location.pathname !== "/login" &&
@@ -83,6 +101,13 @@ function App() {
         {location.pathname !== "/login" &&
           location.pathname !== "/register" && <Footer />}
       </Box>
+      <ModalWindow
+        open={open}
+        setOpen={setOpen}
+        text="Are you sure you want to log out of your account?"
+        handleFunction={hanldeLogout}
+        loading={loading}
+      />
     </StateContext>
   );
 }

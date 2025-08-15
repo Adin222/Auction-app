@@ -6,3 +6,16 @@ export const parseLocation = (path) => {
 
   return { first, second };
 };
+
+export const getActiveFromPath = (pathname) => {
+  switch (pathname) {
+    case "/":
+      return "HOME";
+    case "/shop":
+      return "SHOP";
+    case "/my-account":
+      return "MY ACCOUNT";
+    default:
+      return "";
+  }
+};

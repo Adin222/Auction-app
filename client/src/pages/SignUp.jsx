@@ -32,7 +32,7 @@ export const SignUp = () => {
     lastName: "",
     email: "",
     password: "",
-    role: "BUYER",
+    role: "seller",
   });
 
   const [errors, setErrors] = useState({});
