@@ -16,6 +16,7 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Stack from "@mui/material/Stack";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import useUserState from "../hooks/useUserState";
 
 import { getActiveFromPath } from "../utils/utils";
 
@@ -71,6 +72,8 @@ export const Navbar = () => {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const { role } = useUserState();
 
   const [activeItem, setActiveItem] = React.useState(
     getActiveFromPath(location.pathname)
@@ -236,7 +239,7 @@ export const Navbar = () => {
               HOME
             </button>
             <button
-              onClick={() => handleMenuClick("SHOP", "/public/shop")}
+              onClick={() => handleMenuClick("SHOP", "/shop/all-categories")}
               style={{
                 ...buttonRemoveStyle,
                 fontWeight: activeItem === "SHOP" ? "bold" : "normal",
@@ -244,15 +247,17 @@ export const Navbar = () => {
             >
               SHOP
             </button>
-            <button
-              onClick={(e) => handleSetAccount("MY ACCOUNT", e)}
-              style={{
-                ...buttonRemoveStyle,
-                fontWeight: activeItem === "MY ACCOUNT" ? "bold" : "normal",
-              }}
-            >
-              MY ACCOUNT
-            </button>
+            {role !== "guest" && (
+              <button
+                onClick={(e) => handleSetAccount("MY ACCOUNT", e)}
+                style={{
+                  ...buttonRemoveStyle,
+                  fontWeight: activeItem === "MY ACCOUNT" ? "bold" : "normal",
+                }}
+              >
+                MY ACCOUNT
+              </button>
+            )}
           </Stack>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton

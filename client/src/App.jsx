@@ -15,6 +15,7 @@ import { parseLocation } from "./utils/utils";
 import Box from "@mui/material/Box";
 import { StateContext } from "./context/StateContext";
 import "./App.css";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -85,6 +86,7 @@ function App() {
         </Box>
 
         <CssBaseline />
+        <ScrollToTop />
         <Box sx={{ flex: 1, mt: 4, mb: 4 }}>
           <Container>
             <Routes>
