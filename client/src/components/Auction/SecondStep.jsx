@@ -18,6 +18,10 @@ export const SecondStep = ({ setStep, handleAuction, body, saveToLocal }) => {
       setError("Please fill all fields.");
       return;
     }
+    if (body.startPrice < 0) {
+      setError("Price cannot be less than zero !");
+      return;
+    }
     if (new Date(body.endDate) <= new Date(body.startDate)) {
       setError("End date must be after start date.");
       return;

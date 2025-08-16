@@ -54,7 +54,7 @@ export const SignIn = () => {
 
     setLoading(true);
     const response = await post(loginRoute, formData);
-
+    console.log(response);
     if (response.status === 200) {
       setToastMessage({
         open: true,
@@ -173,7 +173,10 @@ export const SignIn = () => {
           </Link>
         </Typography>
       </Box>
-      <ToastMessage data={toastMessage} />
+      <ToastMessage
+        data={toastMessage}
+        handleClose={() => setToastMessage(false)}
+      />
     </React.Fragment>
   );
 };

@@ -127,7 +127,7 @@ export const FirstStep = ({
             or just drag and drop
           </Typography>
           <Typography variant="body2" sx={{ mt: 0.5 }}>
-            + Add at least 3 photos
+            + Add 3 photos
           </Typography>
 
           {photos.length > 0 && (
