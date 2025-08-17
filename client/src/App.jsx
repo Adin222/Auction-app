@@ -5,6 +5,7 @@ import { SignUp } from "./pages/SignUp";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { BecomeSeller } from "./pages/BecomeSeller";
+import { Shop } from "./pages/Shop";
 import { Routes, Route } from "react-router-dom";
 import { ActionNavbar } from "./components/ActionNavbar";
 import { LoginNavbar } from "./components/LoginNavbar";
@@ -97,6 +98,7 @@ function App() {
                 path="/my-account/become-seller"
                 element={<BecomeSeller />}
               />
+              <Route path="shop/all-categories" element={<Shop />} />
             </Routes>
           </Container>
         </Box>
