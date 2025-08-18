@@ -6,3 +6,4 @@ export const logoutRoute = "/api/logout";
 export const createAuction = "/api/auction";
 
 export const getProducts = "/api/products";
+export const getProduct = "/api/product/";

@@ -2,7 +2,10 @@ package com.adin222.auctionapp.controllers;
 
 import com.adin222.auctionapp.DTO.Product.ProductDTO;
 import com.adin222.auctionapp.service.ProductServices;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -26,4 +29,17 @@ public class ProductController {
     ) {
         return productServices.getProductsByFilter(category, sortBy, order, page, size);
     }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ProductDTO> getProductDetails(@PathVariable Long id) {
+        try {
+           ProductDTO productDTO = productServices.getProductDetails(id);
+           return ResponseEntity.ok(productDTO);
+        } catch (ResponseStatusException e) {
+           return ResponseEntity
+                .status(e.getStatusCode())
+                .body(null); 
+        }
+    }
+
 }

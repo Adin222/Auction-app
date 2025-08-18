@@ -24,6 +24,7 @@ import { get, post } from "./services/services";
 import { meRoute, logoutRoute } from "./routes/routes";
 import { Loading } from "./components/Loading";
 import { ModalWindow } from "./components/ModalWindow";
+import { ProductDetails } from "./pages/ProductDetails";
 
 function App() {
   const location = useLocation();
@@ -77,7 +78,8 @@ function App() {
           {location.pathname !== "/login" &&
             location.pathname !== "/register" && <Navbar />}
           {location.pathname !== "/login" &&
-            location.pathname !== "/register" && (
+            location.pathname !== "/register" &&
+            !location.pathname.startsWith("/product/") && (
               <LocationRibbon
                 location={parseLocation(location.pathname).second}
                 category={parseLocation(location.pathname).first}
@@ -99,6 +101,7 @@ function App() {
                 element={<BecomeSeller />}
               />
               <Route path="shop/all-categories" element={<Shop />} />
+              <Route path="/product/:productId" element={<ProductDetails />} />
             </Routes>
           </Container>
         </Box>

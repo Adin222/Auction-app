@@ -8,7 +8,7 @@ import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 import { Sort } from "../components/Shop/Sort";
 import { Grid, Button } from "@mui/material";
 
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { get } from "../services/services";
 import { getProducts } from "../routes/routes";
 
@@ -18,16 +18,22 @@ export const Shop = () => {
   const [sortBy, setSortBy] = useState("date");
   const [order, setOrder] = useState("asc");
 
-  const { data } = useQuery({
-    queryKey: ["get-products", category, sortBy, order],
-    queryFn: () =>
-      get(
-        `${getProducts}?category=${category}&sortBy=${sortBy}&order=${order}&page=0&size=8`
-      ),
-    retry: false,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["get-products", category, sortBy, order],
+      queryFn: ({ pageParam = 0 }) =>
+        get(
+          `${getProducts}?category=${category}&sortBy=${sortBy}&order=${order}&page=${pageParam}&size=8`
+        ),
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.data.length < 8) return undefined;
+        return allPages.length;
+      },
+      retry: false,
+    });
 
-  const products = data?.data || [];
+  const products = data?.pages.flatMap((page) => page.data) || [];
+
 
   return (
     <Box display="flex">
@@ -99,6 +105,35 @@ export const Shop = () => {
             ))}
           </Grid>
         )}
+        <Box
+          sx={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {hasNextPage && (
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              sx={{
+                textTransform: "none",
+                borderRadius: 0,
+                backgroundColor: "white",
+                width: 150,
+                border: "1px solid grey",
+                color: "grey",
+                "&:hover": {
+                  backgroundColor: "purple",
+                  color: "white",
+                },
+              }}
+            >
+              {isFetchingNextPage ? "Loading..." : "Load More"}
+            </Button>
+          )}
+        </Box>
       </Box>
     </Box>
   );

@@ -113,6 +113,7 @@ export const Navbar = () => {
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
+      disableScrollLock={true}
       PaperProps={{
         sx: {
           boxShadow: "none",
@@ -134,7 +135,6 @@ export const Navbar = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={() => navigate("/my-account/become-seller")}>
         Become Seller
       </MenuItem>

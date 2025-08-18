@@ -67,6 +67,7 @@ export const SignIn = () => {
         setLoading(false);
       }, [750]);
     } else {
+      setLoading(false);
       setToastMessage({
         open: true,
         message: response.data.error,

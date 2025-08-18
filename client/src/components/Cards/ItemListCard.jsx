@@ -7,19 +7,34 @@ import Button from "@mui/material/Button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import GavelIcon from "@mui/icons-material/Gavel";
 
+import { useNavigate } from "react-router-dom";
+
 export const ItemListCard = ({ product }) => {
+  const navigate = useNavigate();
   return (
     <Card sx={{ boxShadow: "none", maxWidth: 800, mt: 5 }}>
       <Stack direction="row" spacing={2}>
         <CardMedia
-          sx={{ width: 280, height: 250, objectFit: "cover", borderRadius: 1 }}
+          onClick={() => navigate(`/product/${product.id}`)}
+          sx={{
+            width: 280,
+            height: 250,
+            objectFit: "cover",
+            borderRadius: 1,
+            cursor: "pointer",
+          }}
           component="img"
           image={product.imageUrl1}
           alt="product"
         />
         <CardContent sx={{ p: 0 }}>
           <Stack direction="column" spacing={2}>
-            <Typography variant="h6" fontWeight="bold">
+            <Typography
+              onClick={() => navigate(`/product/${product.id}`)}
+              sx={{ cursor: "pointer" }}
+              variant="h6"
+              fontWeight="bold"
+            >
               {product.productName}
             </Typography>
 
@@ -47,19 +62,6 @@ export const ItemListCard = ({ product }) => {
                 }}
               >
                 Watchlist
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                endIcon={<GavelIcon />}
-                sx={{
-                  textTransform: "none",
-                  border: "1px solid grey",
-                  color: "grey",
-                  borderRadius: 0,
-                }}
-              >
-                Bid
               </Button>
             </Stack>
           </Stack>
