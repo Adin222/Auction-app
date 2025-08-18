@@ -7,7 +7,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import GavelIcon from "@mui/icons-material/Gavel";
 import Box from "@mui/material/Box";
 
-export const ItemCard = ({ imageUrl, itemName, startPrice }) => {
+export const ItemCard = ({ product }) => {
   return (
     <Card
       sx={{
@@ -20,11 +20,8 @@ export const ItemCard = ({ imageUrl, itemName, startPrice }) => {
         <CardMedia
           sx={{ height: 250, objectFit: "contain" }}
           component="img"
-          image={
-            imageUrl ||
-            "https://mockupmark.com/api/templates/bella-canvas-6400-1.jpg"
-          }
-          alt={itemName || "Product"}
+          image={product.imageUrl1}
+          alt={product.productName || "Product"}
         />
         <Box
           className="overlay"
@@ -80,10 +77,10 @@ export const ItemCard = ({ imageUrl, itemName, startPrice }) => {
       <Box sx={{ cursor: "pointer" }}>
         <CardContent>
           <Typography gutterBottom variant="h6" component="div">
-            {itemName || "Item name"}
+            {product.productName || "Item name"}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Start from: ${startPrice || "59.99"}
+            Start from: ${product.startingPrice || "59.99"}
           </Typography>
         </CardContent>
       </Box>

@@ -6,15 +6,33 @@ import { ProductCategories } from "../components/Shop/ProductCategories";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 import { Sort } from "../components/Shop/Sort";
-import { Grid } from "@mui/material";
-import { Button, Stack } from "@mui/material";
+import { Grid, Button } from "@mui/material";
+
+import { useQuery } from "@tanstack/react-query";
+import { get } from "../services/services";
+import { getProducts } from "../routes/routes";
 
 export const Shop = () => {
   const [mode, setMode] = useState("Grid");
+  const [category, setCategory] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+  const [order, setOrder] = useState("asc");
+
+  const { data } = useQuery({
+    queryKey: ["get-products", category, sortBy, order],
+    queryFn: () =>
+      get(
+        `${getProducts}?category=${category}&sortBy=${sortBy}&order=${order}&page=0&size=8`
+      ),
+    retry: false,
+  });
+
+  const products = data?.data || [];
+
   return (
     <Box display="flex">
       <Box sx={{ width: 220, mr: 7 }}>
-        <ProductCategories />
+        <ProductCategories setCategory={setCategory} />
       </Box>
 
       <Box flex={1}>
@@ -26,7 +44,12 @@ export const Shop = () => {
             mb: 3,
           }}
         >
-          <Sort />
+          <Sort
+            sortBy={sortBy}
+            order={order}
+            setSortBy={setSortBy}
+            setOrder={setOrder}
+          />
           <Box>
             <Button
               onClick={() => setMode("Grid")}
@@ -61,34 +84,19 @@ export const Shop = () => {
 
         {mode === "Grid" && (
           <Box>
-            <ItemListCard />
-            <ItemListCard />
-            <ItemListCard />
-            <ItemListCard />
-            <ItemListCard />
+            {products.map((product) => (
+              <ItemListCard key={product.id} product={product} />
+            ))}
           </Box>
         )}
 
         {mode === "List" && (
           <Grid container spacing={7}>
-            <Grid item xs={12} sm={6} md={4}>
-              <ItemCard />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <ItemCard />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <ItemCard />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <ItemCard />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <ItemCard />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <ItemCard />
-            </Grid>
+            {products.map((product) => (
+              <Grid item xs={12} sm={6} md={4} key={product.id}>
+                <ItemCard product={product} />
+              </Grid>
+            ))}
           </Grid>
         )}
       </Box>

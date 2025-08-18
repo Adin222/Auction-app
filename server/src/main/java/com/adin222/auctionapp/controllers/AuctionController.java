@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.adin222.auctionapp.DTO.Registration.AuctionProduct;
+import com.adin222.auctionapp.config.RequireToken;
 import com.adin222.auctionapp.service.AuctionServices;
 import java.util.Map;
 
@@ -16,7 +17,8 @@ public class AuctionController {
     public AuctionController(AuctionServices auctionServices){
         this.auctionServices = auctionServices;
     }
-    
+
+    @RequireToken
     @PostMapping("/auction")
     public ResponseEntity<Map<String, String>> AuctionCreate(@RequestBody AuctionProduct auctionProduct){
         try{

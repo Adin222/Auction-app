@@ -1,6 +1,7 @@
 package com.adin222.auctionapp.models;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -30,9 +31,10 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Auction auction;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    public Product() {
-    }
+    public Product() {}
 
     public Product(String productName, String category, String description,
                    String imageUrl1, String imageUrl2, String imageUrl3,
@@ -47,6 +49,14 @@ public class Product {
         this.auction = auction;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -83,7 +93,6 @@ public class Product {
     public Auction getAuction() {
         return auction;
     }
-
 
     public void setId(Long id) {
         this.id = id;

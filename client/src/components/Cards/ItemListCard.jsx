@@ -7,33 +7,31 @@ import Button from "@mui/material/Button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import GavelIcon from "@mui/icons-material/Gavel";
 
-export const ItemListCard = () => {
+export const ItemListCard = ({ product }) => {
   return (
     <Card sx={{ boxShadow: "none", maxWidth: 800, mt: 5 }}>
       <Stack direction="row" spacing={2}>
         <CardMedia
           sx={{ width: 280, height: 250, objectFit: "cover", borderRadius: 1 }}
           component="img"
-          image="https://mockupmark.com/api/templates/bella-canvas-6400-1.jpg"
+          image={product.imageUrl1}
           alt="product"
         />
         <CardContent sx={{ p: 0 }}>
           <Stack direction="column" spacing={2}>
             <Typography variant="h6" fontWeight="bold">
-              Shoes Collection
+              {product.productName}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Vestibulum hendrerit odio a erat lobortis auctor. Curabitur
-              sodales pharetra placerat. Aenean auctor luctus tempus.
+              {product.description}
             </Typography>
 
             <Typography
               variant="subtitle1"
               sx={{ color: "purple", fontWeight: 600 }}
             >
-              Start From $59.00
+              Start From ${product.startingPrice}
             </Typography>
 
             <Stack direction="row" spacing={2}>
