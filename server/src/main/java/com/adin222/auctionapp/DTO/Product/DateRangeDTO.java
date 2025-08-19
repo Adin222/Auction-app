@@ -7,19 +7,25 @@ public class DateRangeDTO {
     private LocalDateTime endTime;
     private Double amount;
     private Boolean wishListed;
+    private Long auctionId;
 
     public DateRangeDTO() {
     }
 
-    public DateRangeDTO(LocalDateTime startTime, LocalDateTime endTime, Double amount, Boolean wishListed) {
+    public DateRangeDTO(LocalDateTime startTime, LocalDateTime endTime, Double amount, Boolean wishListed, Long auctionId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.amount = amount;
         this.wishListed = wishListed;
+        this.auctionId = auctionId;
     }
 
     public LocalDateTime getStartTime() {
         return startTime;
+    }
+
+    public Long getAuctionId() {
+        return auctionId;
     }
 
     public Double getAmount(){
@@ -48,5 +54,9 @@ public class DateRangeDTO {
 
     public void setWishlisted(Boolean wishlisted){
         this.wishListed = wishlisted;
+    }
+
+    public void setAuctionId(Long auctionId){
+        this.auctionId = auctionId;
     }
 }

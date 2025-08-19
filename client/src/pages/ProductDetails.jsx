@@ -12,7 +12,7 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import { formatDate } from "../utils/utils";
 
 import { get, post } from "../services/services";
-import { getProduct, postWishlist } from "../routes/routes";
+import { getProduct, postWishlist, makeBid } from "../routes/routes";
 import useUserState from "../hooks/useUserState";
 import { ToastMessage } from "../components/ToastMessage";
 
@@ -23,6 +23,8 @@ export const ProductDetails = () => {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const [bidLoading, setBidLoading] = useState(false);
+  const [bid, setBid] = useState("");
   const params = useParams();
   const { role } = useUserState();
 
@@ -70,6 +72,47 @@ export const ProductDetails = () => {
     }
   };
 
+  const handleMakeBid = async () => {
+    if (bid === "") {
+      setToastMessage({
+        status: "error",
+        message: "Bid cannot be empty",
+        open: true,
+      });
+      return;
+    } else if (bid <= 0) {
+      setToastMessage({
+        status: "error",
+        message: "Bid cannot be zero or less",
+        open: true,
+      });
+      return;
+    }
+
+    setBidLoading(true);
+    const response = await post(`${makeBid}${data?.data.date.auctionId}`, {
+      amount: bid,
+    });
+    if (response.status === 200) {
+      setToastMessage({
+        status: "success",
+        message: response.data.message,
+        open: true,
+      });
+      refetch();
+      setBidLoading(false);
+    } else {
+      setToastMessage({
+        status: "error",
+        message: response.data.error,
+        open: true,
+      });
+      setBidLoading(false);
+    }
+  };
+
+  console.log(data.data);
+
   return (
     <React.Fragment>
       <Box className="container mt-5">
@@ -105,7 +148,9 @@ export const ProductDetails = () => {
                 Starting at: ${data?.data.product.startingPrice.toFixed(2)}
               </span>
               {data?.data.date.amount !== 0 && (
-                <span className="h5 me-2">Highest bid (current): $349.99</span>
+                <span className="h5 me-2">
+                  Highest bid (current): ${data?.data.date.amount.toFixed(2)}
+                </span>
               )}
             </Stack>
 
@@ -125,6 +170,8 @@ export const ProductDetails = () => {
 
             <Stack direction="row" spacing={2} sx={{ marginBottom: "30px" }}>
               <TextField
+                onChange={(e) => setBid(e.target.value)}
+                value={bid}
                 label="Your bid"
                 variant="outlined"
                 type="number"
@@ -132,6 +179,9 @@ export const ProductDetails = () => {
               />
               <Button
                 startIcon={<GavelIcon />}
+                loading={bidLoading}
+                disabled={bidLoading}
+                onClick={handleMakeBid}
                 sx={{
                   backgroundColor: "white",
                   color: "grey",

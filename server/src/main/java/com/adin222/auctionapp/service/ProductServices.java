@@ -80,7 +80,7 @@ public class ProductServices {
     public ProductDetailsResponseDTO getProductDetails(Long id, String token){
            Product product = productRepository.getProductById(id);
            Auction auction = auctionRepository.getAuctionByProductId(id);
-           Bid bid = bidRepository.findTopByOrderByAmountDesc();
+           Bid bid = bidRepository.findTopByAuctionIdOrderByAmountDesc(auction.getId());
 
            Boolean wishlisted = false; 
 
@@ -117,7 +117,8 @@ public class ProductServices {
         auction.getStartTime(),
         auction.getEndTime(),
         amount,
-        wishlisted
+        wishlisted,
+        auction.getId()
     );
 
     return new ProductDetailsResponseDTO(productDTO, dateRangeDTO);

@@ -7,5 +7,6 @@ import com.adin222.auctionapp.models.Bid;
 @Repository
 public interface BidRepository extends JpaRepository<Bid, Long> {
     Bid findTopByOrderByAmountDesc();
+    Bid findTopByAuctionIdOrderByAmountDesc(Long auctionId);
 }
 
