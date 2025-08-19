@@ -138,7 +138,9 @@ export const Navbar = () => {
       <MenuItem onClick={() => navigate("/my-account/become-seller")}>
         Become Seller
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Wishlist</MenuItem>
+      <MenuItem onClick={() => navigate("/my-account/wishlist")}>
+        Wishlist
+      </MenuItem>
     </Menu>
   );
 

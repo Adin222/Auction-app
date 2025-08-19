@@ -25,6 +25,7 @@ import { meRoute, logoutRoute } from "./routes/routes";
 import { Loading } from "./components/Loading";
 import { ModalWindow } from "./components/ModalWindow";
 import { ProductDetails } from "./pages/ProductDetails";
+import { Wishlist } from "./pages/Wishlist";
 
 function App() {
   const location = useLocation();
@@ -102,6 +103,7 @@ function App() {
               />
               <Route path="shop/all-categories" element={<Shop />} />
               <Route path="/product/:productId" element={<ProductDetails />} />
+              <Route path="/my-account/wishlist" element={<Wishlist />} />
             </Routes>
           </Container>
         </Box>
