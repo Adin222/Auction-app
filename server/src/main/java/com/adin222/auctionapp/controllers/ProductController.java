@@ -1,6 +1,7 @@
 package com.adin222.auctionapp.controllers;
 
 import com.adin222.auctionapp.DTO.Product.ProductDTO;
+import com.adin222.auctionapp.DTO.Product.ProductDetailsResponseDTO;
 import com.adin222.auctionapp.service.ProductServices;
 
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,9 @@ public class ProductController {
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<ProductDTO> getProductDetails(@PathVariable Long id) {
+    public ResponseEntity<ProductDetailsResponseDTO> getProductDetails(@PathVariable Long id, @CookieValue(name = "accessToken", required = false) String token) {
         try {
-           ProductDTO productDTO = productServices.getProductDetails(id);
+           ProductDetailsResponseDTO productDTO = productServices.getProductDetails(id, token);
            return ResponseEntity.ok(productDTO);
         } catch (ResponseStatusException e) {
            return ResponseEntity

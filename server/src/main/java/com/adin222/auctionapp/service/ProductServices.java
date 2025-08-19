@@ -1,14 +1,24 @@
 package com.adin222.auctionapp.service;
 
+import com.adin222.auctionapp.DTO.Product.DateRangeDTO;
 import com.adin222.auctionapp.DTO.Product.ProductDTO;
+import com.adin222.auctionapp.DTO.Product.ProductDetailsResponseDTO;
+import com.adin222.auctionapp.models.Auction;
+import com.adin222.auctionapp.models.Bid;
 import com.adin222.auctionapp.models.Product;
+import com.adin222.auctionapp.repository.AuctionRepository;
+import com.adin222.auctionapp.repository.BidRepository;
 import com.adin222.auctionapp.repository.ProductRepository;
+import com.adin222.auctionapp.repository.WishlistRepository;
+import com.adin222.auctionapp.utils.JwtUtil;
+
+import io.jsonwebtoken.Claims;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +26,17 @@ import java.util.stream.Collectors;
 public class ProductServices {
 
     private final ProductRepository productRepository;
+    private final AuctionRepository auctionRepository;
+    private final WishlistRepository wishlistRepository;
+    private final JwtUtil jwtUtil;
+    private final BidRepository bidRepository;
 
-    public ProductServices(ProductRepository productRepository) {
+    public ProductServices(ProductRepository productRepository, AuctionRepository auctionRepository, BidRepository bidRepository, WishlistRepository wishlistRepository, JwtUtil jwtUtil) {
         this.productRepository = productRepository;
+        this.auctionRepository = auctionRepository;
+        this.bidRepository = bidRepository;
+        this.wishlistRepository = wishlistRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public List<ProductDTO> getProductsByFilter(String category, String sortBy, String order, int page, int size) {
@@ -59,24 +77,50 @@ public class ProductServices {
                 .collect(Collectors.toList());
     }
 
-    public ProductDTO getProductDetails(Long id){
-        Product product = productRepository.getProductById(id);
+    public ProductDetailsResponseDTO getProductDetails(Long id, String token){
+           Product product = productRepository.getProductById(id);
+           Auction auction = auctionRepository.getAuctionByProductId(id);
+           Bid bid = bidRepository.findTopByOrderByAmountDesc();
 
-        if (product == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "All fields are required.");
+           Boolean wishlisted = false; 
+
+    if (token != null && !token.isEmpty()) {
+        try {
+            Claims claims = jwtUtil.parseToken(token);
+            Long userId = claims.get("userId", Long.class);
+
+            wishlisted = wishlistRepository.existsByProductIdAndUserId(id, userId);
+        } catch (Exception e) {
+            wishlisted = false;
         }
-
-        ProductDTO productDTO = new ProductDTO(
-            product.getId(), 
-            product.getProductName(), 
-            product.getCategory(), 
-            product.getDescription(), 
-            product.getImageUrl1(), 
-            product.getImageUrl2(), 
-            product.getImageUrl3(), 
-            product.getStartingPrice(), 
-            product.getCreatedAt());
-
-        return productDTO;
     }
+
+    if (product == null || auction == null){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product, auction or bid not found");
+    }
+
+    Double amount = (bid != null) ? bid.getAmount() : 0;
+
+    ProductDTO productDTO = new ProductDTO(
+        product.getId(), 
+        product.getProductName(), 
+        product.getCategory(), 
+        product.getDescription(), 
+        product.getImageUrl1(), 
+        product.getImageUrl2(), 
+        product.getImageUrl3(), 
+        product.getStartingPrice(), 
+        product.getCreatedAt()
+    );
+
+    DateRangeDTO dateRangeDTO = new DateRangeDTO(
+        auction.getStartTime(),
+        auction.getEndTime(),
+        amount,
+        wishlisted
+    );
+
+    return new ProductDetailsResponseDTO(productDTO, dateRangeDTO);
+  }
+
 }
