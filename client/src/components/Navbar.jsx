@@ -18,6 +18,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Stack from "@mui/material/Stack";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import useUserState from "../hooks/useUserState";
+import { useQuery } from "@tanstack/react-query";
+
+import { get } from "../services/services";
+import { searchProds } from "../routes/routes";
 
 import { getActiveFromPath } from "../utils/utils";
 
@@ -200,6 +204,14 @@ export const Navbar = () => {
     </Menu>
   );
 
+  const [elements, setElements] = React.useState("");
+
+  const { data } = useQuery({
+    queryKey: ["products-search", elements],
+    queryFn: () => get(`${searchProds}?query=${elements}`),
+    retry: false,
+  });
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -239,11 +251,13 @@ export const Navbar = () => {
             <StyledInputBase
               onFocus={() => setDropdown(true)}
               onBlur={() => setDropdown(false)}
+              onChange={(e) => setElements(e.target.value)}
+              value={elements}
               placeholder="Try enter: Shoes"
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
-          {dropdown && (
+          {dropdown && elements && (
             <Paper
               elevation={3}
               sx={{
@@ -251,15 +265,41 @@ export const Navbar = () => {
                 top: "100%",
                 left: 150,
                 width: "30%",
-                p: 2,
+                p: 1,
                 zIndex: 1,
               }}
             >
-              <Typography variant="body2">
-                Search suggestions here...
-              </Typography>
+              {data && data?.data.length > 0 ? (
+                data &&
+                data.data.map((product) => (
+                  <Box
+                    key={product.id}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 1,
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "#f5f5f5" },
+                    }}
+                    onMouseDown={() => {
+                      navigate(`/product/${product.id}`);
+                    }}
+                  >
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      style={{ width: 40, height: 40, objectFit: "cover" }}
+                    />
+                    <Typography variant="body2">{product.name}</Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography variant="body2">No results found</Typography>
+              )}
             </Paper>
           )}
+
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" spacing={3}>
             <button

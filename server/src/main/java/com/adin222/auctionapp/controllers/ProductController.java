@@ -2,6 +2,7 @@ package com.adin222.auctionapp.controllers;
 
 import com.adin222.auctionapp.DTO.Product.ProductDTO;
 import com.adin222.auctionapp.DTO.Product.ProductDetailsResponseDTO;
+import com.adin222.auctionapp.DTO.Product.ProductSearchDTO;
 import com.adin222.auctionapp.service.ProductServices;
 
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,18 @@ public class ProductController {
            return ResponseEntity.ok(productDTO);
         } catch (ResponseStatusException e) {
            return ResponseEntity
+                .status(e.getStatusCode())
+                .body(null); 
+        }
+    }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<List<ProductSearchDTO>> searchProducts(@RequestParam(required = false) String query){
+        try{
+            List<ProductSearchDTO> response = productServices.searchProducts(query);
+            return ResponseEntity.ok(response);
+        }catch(ResponseStatusException e){
+            return ResponseEntity
                 .status(e.getStatusCode())
                 .body(null); 
         }

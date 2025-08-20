@@ -11,3 +11,4 @@ export const postWishlist = "/api/add-wishlist/";
 
 export const makeBid = "/api/make-bid/";
 export const wishlist = "/api/wishlist";
+export const searchProds = "/api/products/search";

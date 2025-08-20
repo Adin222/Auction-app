@@ -3,6 +3,7 @@ package com.adin222.auctionapp.service;
 import com.adin222.auctionapp.DTO.Product.DateRangeDTO;
 import com.adin222.auctionapp.DTO.Product.ProductDTO;
 import com.adin222.auctionapp.DTO.Product.ProductDetailsResponseDTO;
+import com.adin222.auctionapp.DTO.Product.ProductSearchDTO;
 import com.adin222.auctionapp.models.Auction;
 import com.adin222.auctionapp.models.Bid;
 import com.adin222.auctionapp.models.Product;
@@ -122,6 +123,17 @@ public class ProductServices {
     );
 
     return new ProductDetailsResponseDTO(productDTO, dateRangeDTO);
+  }
+
+  public List<ProductSearchDTO> searchProducts(String query){
+    if (query == null || query.trim().isEmpty()) {
+        return List.of();
+    }
+    List<Product> products = productRepository.findByProductNameContainingIgnoreCase(query);
+
+    return products.stream()
+            .map(p -> new ProductSearchDTO(p.getId(), p.getProductName(), p.getImageUrl1()))
+            .collect(Collectors.toList());
   }
 
 }
