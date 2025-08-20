@@ -111,8 +111,6 @@ export const ProductDetails = () => {
     }
   };
 
-  console.log(data.data);
-
   return (
     <React.Fragment>
       <Box className="container mt-5">
@@ -168,36 +166,38 @@ export const ProductDetails = () => {
 
             <p className="mb-4">{data?.data.product.description}</p>
 
-            <Stack direction="row" spacing={2} sx={{ marginBottom: "30px" }}>
-              <TextField
-                onChange={(e) => setBid(e.target.value)}
-                value={bid}
-                label="Your bid"
-                variant="outlined"
-                type="number"
-                size="small"
-              />
-              <Button
-                startIcon={<GavelIcon />}
-                loading={bidLoading}
-                disabled={bidLoading}
-                onClick={handleMakeBid}
-                sx={{
-                  backgroundColor: "white",
-                  color: "grey",
-                  border: "1px solid grey",
-                  borderRadius: 0,
-                  "&:hover": {
-                    backgroundColor: "grey",
-                    color: "white",
-                  },
-                }}
-              >
-                Place Bid
-              </Button>
-            </Stack>
+            {role !== "guest" && (
+              <Stack direction="row" spacing={2} sx={{ marginBottom: "30px" }}>
+                <TextField
+                  onChange={(e) => setBid(e.target.value)}
+                  value={bid}
+                  label="Your bid"
+                  variant="outlined"
+                  type="number"
+                  size="small"
+                />
+                <Button
+                  startIcon={<GavelIcon />}
+                  loading={bidLoading}
+                  disabled={bidLoading}
+                  onClick={handleMakeBid}
+                  sx={{
+                    backgroundColor: "white",
+                    color: "grey",
+                    border: "1px solid grey",
+                    borderRadius: 0,
+                    "&:hover": {
+                      backgroundColor: "grey",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Place Bid
+                </Button>
+              </Stack>
+            )}
 
-            {role === "BUYER" && (
+            {role !== "guest" && (
               <Button
                 disabled={loading}
                 loading={loading}

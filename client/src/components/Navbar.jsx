@@ -135,10 +135,20 @@ export const Navbar = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => navigate("/my-account/become-seller")}>
+      <MenuItem
+        onClick={() => {
+          navigate("/my-account/become-seller");
+          handleMenuClose();
+        }}
+      >
         Become Seller
       </MenuItem>
-      <MenuItem onClick={() => navigate("/my-account/wishlist")}>
+      <MenuItem
+        onClick={() => {
+          navigate("/my-account/wishlist");
+          handleMenuClose();
+        }}
+      >
         Wishlist
       </MenuItem>
     </Menu>

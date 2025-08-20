@@ -3,8 +3,9 @@ package com.adin222.auctionapp.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Map;
+import java.util.List;
+import com.adin222.auctionapp.DTO.Wishlist.WishlistDTO;
 import com.adin222.auctionapp.config.RequireToken;
 import com.adin222.auctionapp.service.WishlistService;
 
@@ -30,6 +31,21 @@ public class WishlistController {
            return ResponseEntity
             .status(e.getStatusCode())
             .body(errorResponse);
+        }
+    }
+
+    @RequireToken
+    @GetMapping("/wishlist")
+    public ResponseEntity<Map<String, List<WishlistDTO>>> getWishlist(@CookieValue(name = "accessToken", required = false) String token){
+        try{
+            List<WishlistDTO> wishlist = wishlistService.getWishlistItems(token);
+            Map<String, List<WishlistDTO>> response = Map.of("items", wishlist);
+            return ResponseEntity.ok(response);
+
+        }catch(ResponseStatusException e){
+            return ResponseEntity
+                .status(e.getStatusCode())
+                .body(null); 
         }
     }
     

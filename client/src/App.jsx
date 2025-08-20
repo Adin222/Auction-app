@@ -27,6 +27,8 @@ import { ModalWindow } from "./components/ModalWindow";
 import { ProductDetails } from "./pages/ProductDetails";
 import { Wishlist } from "./pages/Wishlist";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -97,13 +99,16 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<SignIn />} />
               <Route path="/register" element={<SignUp />} />
-              <Route
-                path="/my-account/become-seller"
-                element={<BecomeSeller />}
-              />
-              <Route path="shop/all-categories" element={<Shop />} />
+              <Route path="/shop/all-categories" element={<Shop />} />
               <Route path="/product/:productId" element={<ProductDetails />} />
-              <Route path="/my-account/wishlist" element={<Wishlist />} />
+
+              <Route element={<ProtectedRoute role={role} />}>
+                <Route
+                  path="/my-account/become-seller"
+                  element={<BecomeSeller />}
+                />
+                <Route path="/my-account/wishlist" element={<Wishlist />} />
+              </Route>
             </Routes>
           </Container>
         </Box>
