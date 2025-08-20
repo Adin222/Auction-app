@@ -7,6 +7,7 @@ import { FirstStep } from "../components/Auction/FirstStep";
 import { SecondStep } from "../components/Auction/SecondStep";
 import { ThirdStep } from "../components/Auction/ThirdStep";
 import { CustomStepIcon } from "../components/CustomStepIcon";
+import { Container } from "@mui/material";
 
 const base64ToFile = (base64, filename = "file") => {
   const arr = base64.split(",");
@@ -81,44 +82,48 @@ export const BecomeSeller = () => {
   };
 
   return (
-    <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      <Box>
-        <Stepper activeStep={step}>
-          {steps.map((label, index) => (
-            <Step key={index}>
-              <StepLabel StepIconComponent={CustomStepIcon}>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+    <Container sx={{ mt: 4 }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
+        <Box>
+          <Stepper activeStep={step}>
+            {steps.map((label, index) => (
+              <Step key={index}>
+                <StepLabel StepIconComponent={CustomStepIcon}>
+                  {label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-        {step === 1 && (
-          <FirstStep
-            setStep={setStep}
-            handleAuction={handleAuction}
-            handlePhotos={handlePhotos}
-            body={body}
-            saveToLocal={saveToLocal}
-          />
-        )}
-        {step === 2 && (
-          <SecondStep
-            setStep={setStep}
-            handleAuction={handleAuction}
-            body={body}
-            saveToLocal={saveToLocal}
-          />
-        )}
-        {step === 3 && (
-          <ThirdStep
-            setStep={setStep}
-            handleAuction={handleAuction}
-            body={body}
-            saveToLocal={saveToLocal}
-          />
-        )}
+          {step === 1 && (
+            <FirstStep
+              setStep={setStep}
+              handleAuction={handleAuction}
+              handlePhotos={handlePhotos}
+              body={body}
+              saveToLocal={saveToLocal}
+            />
+          )}
+          {step === 2 && (
+            <SecondStep
+              setStep={setStep}
+              handleAuction={handleAuction}
+              body={body}
+              saveToLocal={saveToLocal}
+            />
+          )}
+          {step === 3 && (
+            <ThirdStep
+              setStep={setStep}
+              handleAuction={handleAuction}
+              body={body}
+              saveToLocal={saveToLocal}
+            />
+          )}
+        </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };

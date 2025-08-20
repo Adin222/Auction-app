@@ -15,6 +15,7 @@ import { get, post } from "../services/services";
 import { getProduct, postWishlist, makeBid } from "../routes/routes";
 import useUserState from "../hooks/useUserState";
 import { ToastMessage } from "../components/ToastMessage";
+import { Container } from "@mui/material";
 
 export const ProductDetails = () => {
   const [toastMessage, setToastMessage] = useState({
@@ -113,74 +114,115 @@ export const ProductDetails = () => {
 
   return (
     <React.Fragment>
-      <Box className="container mt-5">
-        <Box className="row">
-          <Box className="col-md-6 mb-4">
-            <img
-              src={mainImage}
-              alt="Product"
-              className="img-fluid rounded mb-3 product-image"
-              id="mainImage"
-            />
-            <Box className="d-flex justify-content-between">
-              {thumbnails.map((thumb, idx) => (
-                <img
-                  key={idx}
-                  src={thumb}
-                  alt={`Thumbnail ${idx + 1}`}
-                  className={`thumbnail rounded ${
-                    mainImage === thumb ? "border border-primary" : ""
-                  }`}
-                  style={{ cursor: "pointer", width: "100px" }}
-                  onClick={() => setMainImage(thumb)}
-                />
-              ))}
+      <Container sx={{ mt: 4 }}>
+        <Box className="container mt-5">
+          <Box className="row">
+            <Box className="col-md-6 mb-4">
+              <img
+                src={mainImage}
+                alt="Product"
+                className="img-fluid rounded mb-3 product-image"
+                id="mainImage"
+              />
+              <Box className="d-flex justify-content-between">
+                {thumbnails.map((thumb, idx) => (
+                  <img
+                    key={idx}
+                    src={thumb}
+                    alt={`Thumbnail ${idx + 1}`}
+                    className={`thumbnail rounded ${
+                      mainImage === thumb ? "border border-primary" : ""
+                    }`}
+                    style={{ cursor: "pointer", width: "100px" }}
+                    onClick={() => setMainImage(thumb)}
+                  />
+                ))}
+              </Box>
             </Box>
-          </Box>
 
-          <Box className="col-md-6">
-            <h2 className="mb-3">{data?.data.product.productName}</h2>
+            <Box className="col-md-6">
+              <h2 className="mb-3">{data?.data.product.productName}</h2>
 
-            <Stack direction="column" spacing={2} sx={{ marginBottom: "20px" }}>
-              <span className="h4 me-2">
-                Starting at: ${data?.data.product.startingPrice.toFixed(2)}
-              </span>
-              {data?.data.date.amount !== 0 && (
-                <span className="h5 me-2">
-                  Highest bid (current): ${data?.data.date.amount.toFixed(2)}
+              <Stack
+                direction="column"
+                spacing={2}
+                sx={{ marginBottom: "20px" }}
+              >
+                <span className="h4 me-2">
+                  Starting at: ${data?.data.product.startingPrice.toFixed(2)}
                 </span>
+                {data?.data.date.amount !== 0 && (
+                  <span className="h5 me-2">
+                    Highest bid (current): ${data?.data.date.amount.toFixed(2)}
+                  </span>
+                )}
+              </Stack>
+
+              <Stack
+                sx={{
+                  marginTop: "10px",
+                  marginBottom: "15px",
+                  color: "purple",
+                }}
+                direction="column"
+              >
+                <Typography>
+                  Start of an auction: {formatDate(data?.data.date.startTime)}
+                </Typography>
+                <Typography>
+                  End of an auction: {formatDate(data?.data.date.endTime)}
+                </Typography>
+              </Stack>
+
+              <p className="mb-4">{data?.data.product.description}</p>
+
+              {role !== "guest" && (
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ marginBottom: "30px" }}
+                >
+                  <TextField
+                    onChange={(e) => setBid(e.target.value)}
+                    value={bid}
+                    label="Your bid"
+                    variant="outlined"
+                    type="number"
+                    size="small"
+                  />
+                  <Button
+                    startIcon={<GavelIcon />}
+                    loading={bidLoading}
+                    disabled={bidLoading}
+                    onClick={handleMakeBid}
+                    sx={{
+                      backgroundColor: "white",
+                      color: "grey",
+                      border: "1px solid grey",
+                      borderRadius: 0,
+                      "&:hover": {
+                        backgroundColor: "grey",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    Place Bid
+                  </Button>
+                </Stack>
               )}
-            </Stack>
 
-            <Stack
-              sx={{ marginTop: "10px", marginBottom: "15px", color: "purple" }}
-              direction="column"
-            >
-              <Typography>
-                Start of an auction: {formatDate(data?.data.date.startTime)}
-              </Typography>
-              <Typography>
-                End of an auction: {formatDate(data?.data.date.endTime)}
-              </Typography>
-            </Stack>
-
-            <p className="mb-4">{data?.data.product.description}</p>
-
-            {role !== "guest" && (
-              <Stack direction="row" spacing={2} sx={{ marginBottom: "30px" }}>
-                <TextField
-                  onChange={(e) => setBid(e.target.value)}
-                  value={bid}
-                  label="Your bid"
-                  variant="outlined"
-                  type="number"
-                  size="small"
-                />
+              {role !== "guest" && (
                 <Button
-                  startIcon={<GavelIcon />}
-                  loading={bidLoading}
-                  disabled={bidLoading}
-                  onClick={handleMakeBid}
+                  disabled={loading}
+                  loading={loading}
+                  onClick={handleWishlist}
+                  startIcon={
+                    data?.data.date.wishlisted ? (
+                      <FavoriteIcon sx={{ color: "red" }} />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )
+                  }
                   sx={{
                     backgroundColor: "white",
                     color: "grey",
@@ -192,40 +234,14 @@ export const ProductDetails = () => {
                     },
                   }}
                 >
-                  Place Bid
+                  Add to Wishlist
                 </Button>
-              </Stack>
-            )}
-
-            {role !== "guest" && (
-              <Button
-                disabled={loading}
-                loading={loading}
-                onClick={handleWishlist}
-                startIcon={
-                  data?.data.date.wishlisted ? (
-                    <FavoriteIcon sx={{ color: "red" }} />
-                  ) : (
-                    <FavoriteBorderIcon />
-                  )
-                }
-                sx={{
-                  backgroundColor: "white",
-                  color: "grey",
-                  border: "1px solid grey",
-                  borderRadius: 0,
-                  "&:hover": {
-                    backgroundColor: "grey",
-                    color: "white",
-                  },
-                }}
-              >
-                Add to Wishlist
-              </Button>
-            )}
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </Container>
+
       <ToastMessage
         data={toastMessage}
         handleClose={() => setToastMessage(false)}

@@ -82,7 +82,8 @@ function App() {
             location.pathname !== "/register" && <Navbar />}
           {location.pathname !== "/login" &&
             location.pathname !== "/register" &&
-            !location.pathname.startsWith("/product/") && (
+            !location.pathname.startsWith("/product/") &&
+            location.pathname !== "/" && (
               <LocationRibbon
                 location={parseLocation(location.pathname).second}
                 category={parseLocation(location.pathname).first}
@@ -93,24 +94,22 @@ function App() {
 
         <CssBaseline />
         <ScrollToTop />
-        <Box sx={{ flex: 1, mt: 4, mb: 4 }}>
-          <Container>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/register" element={<SignUp />} />
-              <Route path="/shop/all-categories" element={<Shop />} />
-              <Route path="/product/:productId" element={<ProductDetails />} />
+        <Box sx={{ flex: 1, mb: 4 }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/register" element={<SignUp />} />
+            <Route path="/shop/all-categories" element={<Shop />} />
+            <Route path="/product/:productId" element={<ProductDetails />} />
 
-              <Route element={<ProtectedRoute role={role} />}>
-                <Route
-                  path="/my-account/become-seller"
-                  element={<BecomeSeller />}
-                />
-                <Route path="/my-account/wishlist" element={<Wishlist />} />
-              </Route>
-            </Routes>
-          </Container>
+            <Route element={<ProtectedRoute role={role} />}>
+              <Route
+                path="/my-account/become-seller"
+                element={<BecomeSeller />}
+              />
+              <Route path="/my-account/wishlist" element={<Wishlist />} />
+            </Route>
+          </Routes>
         </Box>
         {location.pathname !== "/login" &&
           location.pathname !== "/register" && <Footer />}

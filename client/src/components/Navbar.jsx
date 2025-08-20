@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -72,6 +73,7 @@ export const Navbar = () => {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [dropdown, setDropdown] = React.useState(false);
 
   const { role } = useUserState();
 
@@ -235,10 +237,29 @@ export const Navbar = () => {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              onFocus={() => setDropdown(true)}
+              onBlur={() => setDropdown(false)}
               placeholder="Try enter: Shoes"
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
+          {dropdown && (
+            <Paper
+              elevation={3}
+              sx={{
+                position: "absolute",
+                top: "100%",
+                left: 150,
+                width: "30%",
+                p: 2,
+                zIndex: 1,
+              }}
+            >
+              <Typography variant="body2">
+                Search suggestions here...
+              </Typography>
+            </Paper>
+          )}
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" spacing={3}>
             <button
